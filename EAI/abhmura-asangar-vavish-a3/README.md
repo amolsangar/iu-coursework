@@ -50,9 +50,9 @@
   
   **Test Image 31**
   
-  <img src='https://github.iu.edu/cs-b551-fa2021/abhmura-asangar-vavish-a3/blob/master/part2/output/image_31/output_simple.jpg' alt='Output Simple'>
-  <img src='https://github.iu.edu/cs-b551-fa2021/abhmura-asangar-vavish-a3/blob/master/part2/output/image_31/output_hmm.jpg' alt='Output HMM'>
-  <img src='https://github.iu.edu/cs-b551-fa2021/abhmura-asangar-vavish-a3/blob/master/part2/output/image_31/output_feedback.jpg' alt='Output Human Feedback'>
+  <img src='https://github.com/amolsangar/iu-coursework/blob/main/EAI/abhmura-asangar-vavish-a3/part2/output/image_31/output_simple.jpg' alt='Output Simple'>
+  <img src='https://github.com/amolsangar/iu-coursework/blob/main/EAI/abhmura-asangar-vavish-a3/part2/output/image_31/output_hmm.jpg' alt='Output HMM'>
+  <img src='https://github.com/amolsangar/iu-coursework/blob/main/EAI/abhmura-asangar-vavish-a3/part2/output/image_31/output_feedback.jpg' alt='Output Human Feedback'>
   <br/>
   Simple &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; HMM with Viterbi &emsp;&emsp;&emsp;&emsp;&emsp;&emsp; Human Feedback
 
