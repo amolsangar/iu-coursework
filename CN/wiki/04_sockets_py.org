@@ -1,0 +1,248 @@
+#+TITLE: Fun with Sockets!
+#+SUBTITLE: Fall 2020
+#+OPTIONS: toc:nil num:nil html-postamble:nil author:nil date:nil
+#+LATEX_HEADER: \usepackage{times}
+#+LATEX_HEADER: \usepackage{listings}
+#+LATEX_HEADER: \lstset{basicstyle=\small\ttfamily,columns=flexible,breaklines=true}
+#+LATEX_HEADER: \usepackage[a4paper,margin=1.0in]{geometry}
+#+LATEX_HEADER: \setlength{\parindent}{0cm}
+#+LATEX_HEADER: \usepackage{parskip}
+#+LATEX_HEADER: \usepackage{enumitem}
+#+LATEX_HEADER: \setitemize{noitemsep,topsep=2pt,parsep=2pt,partopsep=2pt}
+#+LATEX_HEADER: \usepackage{titling}
+#+LATEX_HEADER: \setlength{\droptitle}{-1in}
+#+LATEX_HEADER: \posttitle{\par\end{center}\vspace{-.5in}}
+
+* Designing a Server/Client System
+In this assignment you will develop a client/server application using
+the /sockets/ support available in Python.  In a previous assignments, you
+connected (using TCP) to an existing server (such as SMTP mail server or HTTP)
+and read from the connected socket.  Now, you will develop both a client
+program, the accompanying server program, and the application protocol
+that will allow both ends to communicate in some meaningful way.
+
+* Task - Learning About /netster/
+
+In the next three assignment, we will be using the /netster/ skeleton
+code.  This code provides all of the handling for command line arguments
+so that we can focus on the /server/ and /client/ code respectively.
+
+Unlike previous assignments, /netster/ is provided to you in its entirety
+as Python code.  You will find this code in the =netster/= directory of the
+github repository.
+
+ * Take a moment to go through the [[NetsterPython][netster documentation]].
+
+#+BEGIN_QUOTE
+*Note*: The /netster/ framework has arguments for enabling TCP/UDP.
+You will need to use flags in this - and future - assignments to
+determine which task's code is invoked (=-u=, =--udp= in this case to
+indicate the messages should be sent over UDP).
+
+For this assignment, we will only be using a subset of /netster's/ features
+as described below.  Having a greater understanding of the entire framework
+will help you plan for future assignments though, so we recommend you take
+a good look through the entire page.
+#+END_QUOTE
+
+* Task - Setup the /netster/ Environment
+
+To set your directory to the *Sockets* assignment, run the following commands
+from the github root directory:
+
+#+BEGIN_SRC bash
+$ git fetch upstream
+$ git merge upstream/main main
+#+END_SRC
+
+Now unpack the first project:
+
+#+BEGIN_QUOTE
+The above may fail for a number of reasons related to a misconfigured github repository.
+ * If the first command fails, check the [[Submission#add-an-upstream-remote][github remote]] configuration page and make sure you
+   have added the remote.
+#+END_QUOTE
+
+#+BEGIN_SRC bash
+$ cd netster_py
+$ make part1
+#+END_SRC
+
+* Task - Write A TCP Server
+
+Our first task is to write the server program that will listen for
+incoming connections and respond to messages from clients using
+a well-defined, strict protocol described below over TCP.
+
+You should implement your server code inside the provided =chat_server= function in the
+=chat.py= file.
+
+*** chat_server
+#+BEGIN_QUOTE
+/arguments/ 
+  * (string) *iface* Interface to listen for incoming connections
+  * (int) *port* The integer port number to listen for incoming connections on
+  * (bool) *use_udp* Boolean value representing the transport protocol to use (False = TCP, True = UDP)
+
+/returns/ - Returns nothing
+
+/description/ - Called automatically by /netster/, will establish and handle connections.
+#+END_QUOTE
+
+The contents of your packets (the values passed to the =send= and =recv= functions) 
+should only include the plain text as described below for this assignments.
+
+*Server Protocol Details*:
+
+| Messages MUST be the only content printed to stdout or stderr and should appear alone without any special formatting. |
+| Port numbers < 1024 are for system use; when testing you must use a port number >= 1024.                              |
+
+- Welcome messages
+  + When started, the server should print ~Hello, I am a server~
+- Normal messages
+  + If your server receives the characters ~hello~, it should respond to
+    the client with the characters ~world~ and wait for more messages.
+  + If your server receives the characters ~goodbye~, it should respond
+    with the characters ~farewell~, terminate the connection to that client,
+    and then wait for a new connection from the next client.
+  + If your server receives the characters ~exit~, the server process
+    should respond with the characters ~ok~ and then terminate.
+  + The server should echo (return verbatim) all other messages back to the client.
+- Server output
+  + Print each new TCP connection (client) with the string ~connection <n> from
+    ('<host>', <port>)~ where integer ~<n>~ starts at 0 and increments
+    with each new connection, string ~<host>~ is the IP address in
+    single quotes (like '127.0.0.1'), and ~<port>~ is an integer port
+    number (like ~12345~).  Example: ~connection 0 from ('127.0.0.1',
+    12345)~
+  + Print each incoming client message with the string ~got message
+    from ('<host>', <port>)~, with the same definitions of ~<host>~
+    and ~<port>~ from above.  Example: ~got message from ('127.0.0.1', 12345)~
+    *Do not print the content of the message itself!*
+- All messages must end with LF (line feed, or ~\n~) character.
+- Limit maximum message size to 256 bytes, /including/ the termination
+  character.
+
+Please note that behavior of ~goodbye~ is different from ~exit~.  An
+~exit~ command stops both the client and server, while the ~goodbye~
+command only closes the current connection, but leaves the server
+running.
+
+* Task - Write a TCP Client
+
+Next, we will write the client code for connecting to the /netster/ server using TCP.
+You should implement your server code inside the provided ~chat_client~ function in the
+=chat.py=.
+
+*** chat_client
+#+BEGIN_QUOTE
+/arguments/ 
+  * (string) *host* Interface to listen for incoming connections
+  * (int) *port* The integer port number to listen for incoming connections on
+  * (bool) *use_udp* Boolean value representing the transport protocol to use (False = TCP, True = UDP)
+
+/returns/ - Returns nothing
+
+/description/ - Called automatically by /netster/, will connect to a remote server, take user input and
+send the user input to the server verbatim.
+#+END_QUOTE
+
+*Protocol Details*:
+
+| Messages MUST be the only content printed to stdout or stderr and should appear alone without any special formatting. |
+| Port numbers < 1024 are for system use; when testing you must use a port number >= 1024.                              |
+
+- Welcome messages
+  + When started, the client should print ~Hello, I am a client~
+- Normal messages
+  + Your client should take characters from the user over ~stdin~
+    + Full messages should be transmitted one line at a time
+    + The client should Wait for a response before taking a new input
+  + Your client should print each message it receives from the server without modification.
+- All messages must end with LF (line feed, or ~\n~) character.
+- Limit maximum message size to 256 bytes, /including/ the termination
+  character.
+
+* Task - Implement A UDP Server
+
+For this task, we will add UDP functionality to your server.  The
+behavior of the server should be the same as above, but the socket
+should be configured to send datagrams over UDP.
+
+ - UDP is CONNECTIONLESS.  You SHOULD NOT print ~connection <n> from
+    ('<host>', <port>)~ when running /netster/ as a UDP server.
+
+This will be indicated to the code by the state of the ~use_udp~ argument.
+
+* Task - Implement A UDP Client
+
+For this task, we will add UDP functionality to your client.  The
+behavior of the client should be the sam as above, but the socket
+should be configured to send datagrams over UDP.
+
+This will be indicated to the code by the state of the ~use_udp~ argument.
+
+* Task (Graduate Students) - Write a Multithreaded Server
+
+Graduate students take one step further.  Extend the above TCP
+implementations in /chat.py/ with multithreaded connection handling,
+meaning that the server can service more than one client request at a
+time.  You should be able to test multiple client connections to a
+single server simultaneously.
+
+* Assignment Files
+
+The =netster_py/= directory contains a number of files for the framework
+
+ * *chat.py*    - This file will contain your server/client code for the chat protocol in this assignment
+ * *netster.py* - This file contains the netster framework code for handling command arguments.
+ * *Makefile* - This file contains rules for automatically building your program.
+   Keep this file in the directory, but you can safely ignore it otherwise.
+
+The =netster/= directory *also* contains a =.templates/= directory.  Leave this directory alone,
+it contains build scripts for future projects.
+
+* Testing
+
+To help test your /netster/ implementation, we have installed our reference implementation of /netster/ on our *lunar* and *solar* servers.
+We recommend the following.
+
+ * Open two terminals.  These will serve as your /client/ and /server/ terminals in your tests.  We'll refer to them as the /client-terminal/ and
+   /server-terminal/ respectively.
+
+**** Local Testing
+
+  1. Change directory in both terminals until your working directory is the =netster/= directory.
+  2. In the /server-terminal/ run /netster/ with =python3 netster.py -i 0.0.0.0=
+  3. In the /client-terminal/ run /netster/ with =python3 netster.py 127.0.0.1=
+  4. Test various combinations of "hello", "goodbye", "exit", and other text and compare the results to our described protocol.
+  5. Repeat the above test with different combinations of the =--port= flag (both same port and different ports).
+  6. Repeat 5 and 6 with the =--udp= flag.
+
+**** Full Testing
+
+Once you are satisfied that your code works with well with itself, you can test it against 
+our implementation by running it on *lunar* and *solar*.
+
+  1. Copy your /netster/ application to *lunar* with =scp *.py <username>@lunar.open.sice.indiana.edu:netster=
+  2. Copy your /netster/ application to "solar" with =scp *.py <username>@solar.open.sice.indiana.edu:netster=
+
+      You will need to repeat steps 1 and 2 for any changes you make.  Alternatively, you can clone your repo to *lunar* and *solar* and work from there
+
+  2. In the /server-terminal/ SSH to *lunar* with =ssh <username>@lunar.open.sice.indiana.edu=
+  3. In the /client-terminal/ SSH to *solar* with =ssh <username>@solar.open.sice.indiana.edu=
+  4. Note down the recommended port that is printed in the terminal when you SSH into *lunar*
+  5. Test your client with steps 6-9.
+  6. In the /server-terminal/ run the reference server with =netster-ref -i 0.0.0.0 --port <port>= (<port> is the recommended port from step 4)
+  7. In the /client-terminal/ run your implementation with =python3 netster.py lunar.open.sice.indiana.edu --port <port>= (<port> is the recommended port FROM *lunar*)
+  8. Run the tests from "Local Testing" steps 5-7.
+  9. Close both /netster/ and /netster-ref/ in their respective terminals.
+  10. Test your server with steps 11-13.
+  11. In the /server-terminal/ run your implementation with =python3 netster.py -i 0.0.0.0 --port <port>= (<port> is the recommended port from step 4)
+  12. In the /client-terminal/ run the reference client with =netster-ref lunar.open.sice.indiana.edu --port <port>= (<port> is the recommended port from step 4)
+  13. Run the tests from "Local Testing" steps 5-7.
+
+* TO SUBMIT
+
+- Submit your =chat.c= file to the autograder (Python version)
+  - Your client and server MUST implement all of the protocol instructions as described above

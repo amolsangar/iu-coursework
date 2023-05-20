@@ -1,0 +1,140 @@
+#+TITLE: Applying Sockets!
+#+SUBTITLE: Fall 2020
+#+OPTIONS: toc:nil num:nil html-postamble:nil author:nil date:nil
+#+LATEX_HEADER: \usepackage{times}
+#+LATEX_HEADER: \usepackage{listings}
+#+LATEX_HEADER: \lstset{basicstyle=\small\ttfamily,columns=flexible,breaklines=true}
+#+LATEX_HEADER: \usepackage[a4paper,margin=1.0in]{geometry}
+#+LATEX_HEADER: \setlength{\parindent}{0cm}
+#+LATEX_HEADER: \usepackage{parskip}
+#+LATEX_HEADER: \usepackage{enumitem}
+#+LATEX_HEADER: \setitemize{noitemsep,topsep=2pt,parsep=2pt,partopsep=2pt}
+#+LATEX_HEADER: \usepackage{titling}
+#+LATEX_HEADER: \setlength{\droptitle}{-1in}
+#+LATEX_HEADER: \posttitle{\par\end{center}\vspace{-.5in}}
+
+* File Transfer Application
+Previously, you implemented a TCP and UDP socket and a simple protocol to use
+the sockets.  Now you will extend that code to use /netster/ to transfer *files*
+from a client to a server over TCP and UDP.
+
+*You should not assume that the file is text.*  It may be any content with /any
+encoding/ (e.g. pdf, audio, images).  Your implementation should function
+correctly regardless of the contents of the file.
+
+This assignment is like a simplified version of =scp= or =Dropbox=.  It can copy
+files on the same machine like =cp=, but in addition it can copy files from one
+machine to another.
+
+* Task - Usage
+To make /netster/ send files, use the =-f= option to both the server and the client.
+- For the client, the syntax is =-f name= where =name= is the name of an existing file.
+- For the server, the syntax is =-f newname= where =newname= is the name for the newly-created file.
+
+** Localhost Example (TCP)
+Here is an example using localhost on solar, which makes a copy of =.bashrc= called =new_file=.
+As always, start the server first:
+#+begin_src bash
+ashroyer@solar:~$ netster-ref -p 2084 -f new_file
+Hello, I am a server
+#+end_src
+
+Then in a separate terminal, launch a client:
+#+begin_src bash
+ashroyer@solar:~$ netster-ref localhost -p 2084 -f .bashrc  # 127.0.0.1 is another name for localhost
+Hello, I am a client
+#+end_src
+
+*Did it work?* After this interaction between the client and server, there is now a =new_file= which has the same contents as =.bashrc=:
+#+begin_src bash
+ashroyer@solar:~$ diff new_file .bashrc
+ashroyer@solar:~$
+#+end_src
+
+(No output from =diff= means the files are identical.)
+** Solar/Lunar Example (TCP)
+Next is an example transferring a file from a client on =lunar= to a server on =solar=.
+Note the differences from the =localhost= example.
+
+First the server:
+#+begin_src bash
+ashroyer@solar:~/netster$ netster-ref -p 2084 -f new_file
+Hello, I am a server
+#+end_src
+
+Then the client:
+#+begin_src bash
+ashroyer@lunar:~$ netster-ref solar.open.sice.indiana.edu -p 2084 -f .bashrc
+Hello, I am a client
+#+end_src
+
+*Did it work?* Check using =diff= just like the previous example.
+
+** Solar/Lunar Example (UDP)
+This is almost identical to the TCP version, the only thing we add is the =-u= argument:
+
+#+begin_src bash
+ashroyer@solar:~/netster$ netster-ref -u -p 2084 -f new_file
+Hello, I am a server
+#+end_src
+
+#+begin_src bash
+ashroyer@lunar:~$ netster-ref solar.open.sice.indiana.edu -u -p 2084 -f .bashrc
+Hello, I am a client
+#+end_src
+
+*Did it work?* Check using =diff= just like the first example.
+
+* Task - Setup
+The following instructions assume that you are starting in your personal class git repository and have set up our repository as [[https://github.iu.edu/SICE-Networks/Net-Fall21/wiki/Submission#remote-setup][upstream]].
+
+Begin by fetching the most recent content from our repository.
+You can download the [[https://github.iu.edu/SICE-Networks/Net-Fall22][SICE-Networks/Net-Fall22]] repository and copy the relevant files to your repository, or use git:
+#+BEGIN_SRC bash
+$ git fetch upstream
+$ git merge upstream/main
+#+END_SRC
+
+Next, run =make part2= one time to copy the template files into your =netster=
+or =netster_py= directory:
+#+begin_src bash
+$ cd netster  # or cd netster_py if using Python
+$ make part2
+#+end_src
+
+You only need to run =make part2= one time.
+Each time you want to compile after this step, just use =make=.
+You can also clean up the compiled code with =make clean=.
+
+#+begin_quote
+NOTE: Python users do not need to run =make= or =make clean= because there is no compile step for python.
+#+end_quote
+
+* Task - Output Requirements
+1. The copied file must have identical bytes to the original.
+2. Your implementation must transfer with TCP, unless you add the =-u= option, in which case it must transfer using UDP.
+
+When transferring with TCP, both server and client must use TCP.
+Likewise when using UDP, both server and client must use UDP.
+
+* Task - Implementation Requirements
+- The maximum message size you're allowed to use is *256 bytes*.
+- TCP server receives only from a single TCP client.
+- UDP server receives only from a single UDP client.
+- A *0-byte* message indicates to the server that the file transmission is complete.
+  - After receiving the *0-byte* message, the server should close the file it was writing...
+  - ...and then the server must exit.
+- After sending the entire file contents, the client sends a *0-byte* message.
+  - This *0-byte* message indicates to the server that the file transmission is complete.
+  - After sending this *0-byte* message, the client must exit.
+
+* Testing
+It is convenient to test on =localhost= at first, because you can easily check if =new_file= is the same as whatever file you sent using the =diff= program.
+
+When testing using =lunar= and =solar=, be aware that even though these are separate machines, we synchronize your home directories.
+This means if you create a file on =lunar=, it will show up immediately on =solar= - this can be confusing if you aren't expecting it!
+
+Best practice: simply use a new name for the server file.
+
+* TO SUBMIT
+Upload your =file.c= (or =file.py= if using python) to the autograder here: [link coming soon].

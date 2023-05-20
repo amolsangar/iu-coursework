@@ -1,0 +1,205 @@
+#+TITLE: Creating an HTTP Client in C
+#+SUBTITLE: Fall 2022
+#+OPTIONS: toc:nil num:nil html-postamble:nil author:nil date:nil
+#+LATEX_HEADER: \usepackage{times}
+#+LATEX_HEADER: \usepackage{listings}
+#+LATEX_HEADER: \lstset{basicstyle=\small\ttfamily,columns=flexible,breaklines=true}
+#+LATEX_HEADER: \usepackage[a4paper,margin=1.0in]{geometry}
+#+LATEX_HEADER: \setlength{\parindent}{0cm}
+#+LATEX_HEADER: \usepackage{parskip}
+#+LATEX_HEADER: \usepackage{enumitem}
+#+LATEX_HEADER: \setitemize{noitemsep,topsep=2pt,parsep=2pt,partopsep=2pt}
+#+LATEX_HEADER: \usepackage{titling}
+#+LATEX_HEADER: \setlength{\droptitle}{-1in}
+#+LATEX_HEADER: \posttitle{\par\end{center}\vspace{-.5in}}
+
+The Hypertext Transport Protocol provides a mechanism for sending and receiving files
+over the network.  In the exercise you will write a client in C that allows you to
+make GET and POST requests from the command line.
+
+*** Tasks
+#+BEGIN_QUOTE
+ 1. Clone your github repository as at =https://github.iu.edu/Luddy-Networks-FA22/yourname=, replacing =yourname= with your username
+ 2. Write a simple C client to send raw HTTP requests
+#+END_QUOTE
+
+* Task - Write a simple HTTP client
+
+In this task, you will write a C program that creates =GET= and =POST= HTTP requests
+based on command line arguments.  This will work like a very simplified version of the
+linux /curl/ program.
+
+*Once complete, your program should have the following behavior.*
+
+Your program will take 3 arguments
+  * /host/ - a url to make the request to i.e. =www.example.com=
+  * /verb/ - the action to take, either GET or POST
+    * HTTP has many more actions, but for this assignment, we only expect you to take GET and POST
+  * /path/ - the page to GET or POST i.e. =/= or =/coolpage/home.html=
+
+It should print out the contents of the response from the server.
+
+To get the contents of a remote website, you would first build your code with =make=
+from within the directory with your /Makefile/ and /main.c/ file.
+
+#+BEGIN_QUOTE
+If you have correctly cloned the course repository, this should be in the =http/=
+directory.
+#+END_QUOTE
+
+#+begin_src bash
+make
+#+end_src
+
+Then test your program with the following:
+
+#+begin_src bash
+$ ./httpcmd www.example.com GET /
+#+end_src
+
+** Assignment Files
+
+We provide you with the scaffold for the completed client in
+the course github repository.  In the =http/= subdirectory of 
+the course github you will find three files (described below) 
+that you will need to develop your HTTP client.
+
+ * *main.c* - This file will contain your work.
+ * *Makefile* - This file contains rules for automatically building your program.
+   Keep this file in the directory, but you can safely ignore it otherwise.
+ * *http.a* - This file is a "library" file containing helper code to simplify
+   this first project.
+
+** Library Code
+
+=http.a= is a file that contains compiled functions to help you implement
+your http client.  As long as you include the =http.a= file by using
+=make=, you may call these function(s) in your code.
+
+*** send_http
+
+#+BEGIN_QUOTE
+/arguments/
+  * (char*) *host* The host to send the HTTP request to
+  * (char*) *message* A WELL FORMATTED HTTP request
+  * (char*) *resp* A char buffer that will contain the response from the HTTP server
+  * (int) *len* The size of the *resp* buffer
+
+/returns/ - (void) This function returns no value
+
+/description/ - Send a message to the server and get the response.
+
+#+END_QUOTE
+
+This function will do the lions share of the network heavy lifting until you become
+more comfortable with network programming.  We will be implementing this function
+in class later in the semester.
+
+#+BEGIN_QUOTE
+The =send_http= function ONLY performs the necessary steps to send the message
+over the network to the server.  There is no hidden HTTP magic going on in here.
+The contents of the second argument are what the server receives verbatim and
+the response is placed in the third argument without modification.
+#+END_QUOTE
+
+Using this function, you can send a message to a server as below:
+
+/Example/
+#+BEGIN_SRC c
+char response[1024];
+send_http("www.google.com", "GET / HTTP/1.0\r\n\r\n", response, 1024);
+printf("%s\n", response);
+#+END_SRC
+
+
+* /TO SUBMIT/
+   * Submit your =main.c= files to the [[https://autograder.luddy.indiana.edu/web/project/492][autograder]].
+     * your =htttpcmd= program MUST print only the response from the server, with no extra text
+     * Your =httpcmd= program SHOULD retrieve at least the first 4096 bytes
+       * Unretrieved bytes beyond 4096 will not count against your grade in this assignment
+     * Your =httpcmd= program MUST print the responses from the server
+     * Your output MUST include the headers from the server
+       * On a successful request, this SHOULD include the initial =HTTP/1.1 200 OK= response
+
+   * GET expectations (expected response from the server)
+     * GET requests to the /www.example.com/ host at path "/" MUST return a response code between 200 and 299
+     * GET requests to the /www.example.com/ host at an invalid path such as "/bad/path" MUST return with a status code of 404
+     * This response MUST contain at least the first 4096 characters of the body (including headers), see example below
+   * POST expectations (expected response from the server)
+     * POST requests to the /www.example.com/ host at path "/" MUST return a response code of 200
+
+**** Note:
+#+BEGIN_QUOTE
+If a behavior is not described above, we are not testing for it.
+#+END_QUOTE
+
+* /Example/
+
+*** Running the following command...  
+#+BEGIN_SRC bash
+$ ./httpcmd www.example.com GET /
+#+END_SRC
+
+*** Should print the following output...
+#+BEGIN_SRC bash
+HTTP/1.0 200 OK
+Age: 578569
+Cache-Control: max-age=604800
+Content-Type: text/html; charset=UTF-8
+Date: Wed, 24 Aug 2022 15:04:42 GMT
+Etag: "3147526947+ident"
+Expires: Wed, 31 Aug 2022 15:04:42 GMT
+Last-Modified: Thu, 17 Oct 2019 07:18:26 GMT
+Server: ECS (chb/0286)
+Vary: Accept-Encoding
+X-Cache: HIT
+Content-Length: 1256
+Connection: close
+
+<!doctype html>
+<html>
+<head>
+    <title>Example Domain</title>
+
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style type="text/css">
+    body {
+        background-color: #f0f0f2;
+        margin: 0;
+        padding: 0;
+        font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+    }
+    div {
+        width: 600px;
+        margin: 5em auto;
+        padding: 2em;
+        background-color: #fdfdff;
+        border-radius: 0.5em;
+        box-shadow: 2px 3px 7px 2px rgba(0,0,0,0.02);
+    }
+    a:link, a:visited {
+        color: #38488f;
+        text-decoration: none;
+    }
+    @media (max-width: 700px) {
+        div {
+            margin: 0 auto;
+            width: auto;
+        }
+    }
+    </style>
+</head>
+
+<body>
+<div>
+    <h1>Example Domain</h1>
+    <p>This domain is for use in illustrative examples in documents. You may use this
+    domain in literature without prior coordination or asking for permission.</p>
+    <p><a href="https://www.iana.org/domains/example">More information...</a></p>
+</div>
+</body>
+</html>
+#+END_SRC

@@ -1,0 +1,28 @@
+* Welcome to the Net-Fall22 wiki!
+
+** Sitemap
+
+[[Syllabus][Course Syllabus]]
+#+BEGIN_QUOTE
+Contains information about the class structure and general rules.
+#+END_QUOTE
+
+[[Submission][Homework Submission]]
+#+BEGIN_QUOTE
+Homework will be submitted through the department autograding server.  Instructions for setting up your github repositories for this course can be found here.
+#+END_QUOTE
+
+[[Luddy-Linux-Resources][SSH and Linux]]
+#+BEGIN_QUOTE
+This page includes information for connecting to and using school linux resources.
+#+END_QUOTE
+
+[[CodeStyle][Code Style Guide]]
+#+BEGIN_QUOTE
+We will expect code to conform to a few basic style requirements.  They are enumerated in the Style Guide.
+#+END_QUOTE
+
+[[Netster][Netster Docs]]
+#+BEGIN_QUOTE
+~Netster~ is a network tools framework written in C that you will use and modify in this class.  This document contains general information about using ~Netster~.
+#+END_QUOTE

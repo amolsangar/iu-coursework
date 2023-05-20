@@ -1,0 +1,84 @@
+#+TITLE: Code Submission Guidelines
+#+SUBTITLE: 
+#+OPTIONS: toc:nil num:nil html-postamble:nil author:nil date:nil
+#+LATEX_HEADER: \usepackage{times}
+#+LATEX_HEADER: \usepackage{listings}
+#+LATEX_HEADER: \lstset{basicstyle=\small\ttfamily,columns=flexible,breaklines=true}
+#+LATEX_HEADER: \usepackage[a4paper,margin=1.0in]{geometry}
+#+LATEX_HEADER: \setlength{\parindent}{0cm}
+#+LATEX_HEADER: \usepackage{enumitem}
+#+LATEX_HEADER: \setitemize{noitemsep,topsep=2pt,parsep=2pt,partopsep=2pt}
+#+LATEX_HEADER: \usepackage{titling}
+#+LATEX_HEADER: \setlength{\droptitle}{-1in}
+#+LATEX_HEADER: \posttitle{\par\end{center}\vspace{-.5in}}
+
+** Overview
+
+This course provides files through the Indiana University Enterprise Github.
+Assignments will assume that you have created your own clone of our master
+repository (described below).  Networking is complex enough without differences
+between student and instructor working environment.  You should complete any
+programming assignments for this course within your cloned repository to ensure
+your environment matches our own.
+
+Start by navigating to the Indiana University Enterprise Github site.
+
+ * https://github.iu.edu
+ * Login with your IU username and password.
+
+*Do not confuse this with github.com!*
+
+** Setting up your private keys
+
+To work efficiently with IU github, you will need to set up your private
+keys. Github.com has a very good tutorial on how to set this up. /Since we are/
+/using the Indiana University Enterprise Github, make sure that where the/
+/tutorial refers to/ *github.com*, /you use/ *github.iu.edu* /instead./
+
+[[https://help.github.com/articles/generating-ssh-keys/][generating ssh keys]]
+
+** Repository Creation
+We created a private repository for you at =https://github.iu.edu/Luddy-Networks-FA22/yourname= with =yourname= replaced by your IU username.
+
+For example, if your username was =abcdefg= then your repo would be =https://github.iu.edu/Luddy-Networks-FA22/abcdefg=.
+
+If you're unable to access your repo, please let us know!
+
+** Add an =upstream= remote
+We may occasionally update files in our GitHub repository, so please add the original as an "upstream" remote:
+
+#+begin_src
+git remote add upstream https://github.iu.edu/Luddy-Networks-FA22/Net-Fall22.git
+git remote -v # shows this new "upstream" in addition to your original "origin" remote repository address
+#+end_src
+
+** Syncing with =upstream=
+This assumes you followed the instructions in the previous section and named the teacher remote "upstream".
+
+Step 1. Commit your local changes (you should be doing this regularly anyway):
+#+begin_src
+git commit -m 'detailed commit message should go here'
+#+end_src
+
+Step 2. Pull the latest changes from the teacher's repository:
+#+begin_src
+git fetch upstream      # download latest from teacher repo
+git checkout main       # ensure you are on your main branch
+git merge upstream/main # add your changes on top of those from upstream
+#+end_src
+
+Step 3. Continue working and push to your repository regularly:
+#+begin_src
+# edit code...
+# git commit...
+git push origin main    # push your changes to the main branch of your repo
+#+end_src
+
+** Assignment Submission
+
+Assignments will be submitted through an automated grading service.  Submit the files enumerated in each assignment to the autograder to receive your grade.  
+
+*IMPORTANT*  Please note that you have a limited supply of autograder submissions for the semester.  You can submit each assignment once, then an additional ten [10] submissions over the semester.  Further submissions will incur a 0.5 point penalty to your participation grade.
+
+So please make sure that you thoroughly test your code _before_ submitting to the autograder.  If you have questions about your submission, you should bring them to your Instructor or AI rather than using autograder submissions.
+

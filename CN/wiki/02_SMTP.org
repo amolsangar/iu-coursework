@@ -1,0 +1,202 @@
+#+TITLE: Exploring the Simple Mail Transfer Protocol
+#+SUBTITLE: Fall 2022
+#+OPTIONS: toc:nil num:nil html-postamble:nil author:nil date:nil
+#+LATEX_HEADER: \usepackage{times}
+#+LATEX_HEADER: \usepackage{listings}
+#+LATEX_HEADER: \lstset{basicstyle=\small\ttfamily,columns=flexible,breaklines=true}
+#+LATEX_HEADER: \usepackage[a4paper,margin=1.0in]{geometry}
+#+LATEX_HEADER: \setlength{\parindent}{0cm}
+#+LATEX_HEADER: \usepackage{parskip}
+#+LATEX_HEADER: \usepackage{enumitem}
+#+LATEX_HEADER: \setitemize{noitemsep,topsep=2pt,parsep=2pt,partopsep=2pt}
+#+LATEX_HEADER: \usepackage{titling}
+#+LATEX_HEADER: \setlength{\droptitle}{-1in}
+#+LATEX_HEADER: \posttitle{\par\end{center}\vspace{-.5in}}
+
+The Simple Mail Transfer Protocol (SMTP) is used to exchange electronic mail
+(email) messages on the Internet.  A number of organizations run what are known
+as Mail Transfer Agents (MTAs) that implement SMTP and handle the delivery and
+relaying of email.  This assignment will have you become familiar with the
+text-based nature of the protocol by interacting directly with an SMTP server.
+You will then write a simple client program to perform the same functions.
+
+*** Tasks
+#+BEGIN_QUOTE
+ 1. Use SMTP to manually send an email
+ 2. Write a simple C client that sends emails using SMTP
+#+END_QUOTE
+
+* Task 1 - Interact with an SMTP server
+
+For this task you will connect to a mail-relay server set up for this class using 
+a command line tool.
+
+#+BEGIN_QUOTE
+*NOTE*: You will need to connect from a system on the IU network.  Access to the
+IU mail server on port 25 is restricted to certain networks, and your ISP is
+most likely not one of them!  You may either use the 
+[[https://kb.iu.edu/d/ajrq][IU VPN]] or (recommended) first /ssh/ to a SICE 
+system like =burrow.sice.indiana.edu= and =silo.sice.indiana.edu= and run the
+assignment commands there.
+#+END_QUOTE
+
+*** Using telnet
+Once logged onto one of the above IU hosts, you can use /telnet/ to reach the class
+mail server at =lunar.open.sice.indiana.edu= on port 25:
+
+#+begin_src text
+$ telnet lunar.open.sice.indiana.edu 25
+#+end_src
+
+Use the /Ctrl-]/ escape sequence to enter the =telnet>= prompt.  Quit telnet by typing *quit* at the
+=telnet>= prompt.
+
+** /Send an Email/
+Once connected to the mail server, follow the instructions in your
+textbook or [[http://www.samlogic.net/articles/smtp-commands-reference.htm][online resources]] 
+to send an email to yourself using SMTP.  The SMTP server used in this assignment is restricted
+to only forward emails sent to yourself.  Once you are comfortable with crafting 
+and sending your own emails, do the following:
+
+ * Copy the token that the server returns on completion of your email.  Create a /plain/ /text/ file
+   called =smtp.txt= containing just the token.  The file should look something like the following, copy and
+   pasted from the command line.
+
+#+begin_src text
+250 b'eyJob3N0bmFtZSI6IC5lZHUiLCAic2VuZGVyIjogImplbXVz_BaDHaShc2VyQGl1LmVkdSIsICJyZWNpZXZlcnMiOiBbImplbXVzc2VyQGl1LmVkdSJdLCAiYm9keSI6ICJGcm9tOiBqZW11c3NlckBpdS5lZHVcclxuVG86IGplbXVzc2VyQGl1LmVkdVxyXG5TdWJqZWN0OiBUZXN0IEhhc2hcclxuXHJcblRoaXMgaXMgYSB0ZXN0IGViIsICJ0dGwiOiA2NX0='
+#+end_src
+
+ * Save the contents of the =smtp.txt=, you will submit this file along with the Task 2 =main.c= file to the autograder.
+
+* Task 2 - Write a simple SMTP client
+
+The purpose of this exercise is to familiarize yourself with developing a client
+program that connects to the network, specifically one that talks to the 
+SMTP server that you used in the first task.
+
+** Task
+
+Write a C program that reads a file and sends the contents as an email.  This
+program should take two arguments: destination email address and a filename.
+
+Once complete, your program should have the following behavior:
+
+  1. Make an SMTP connection to the =lunar.open.sice.indiana.edu= mail server (see functions below)
+  2. Send the SMTP handshake to the server
+  3. Read the file into a buffer
+  4. Send the contents of the file to the server
+
+To send an email to (and from, remember our server requires the sender and receiver be the same) =jemusser@example.example.com= containing the contents of an =email.txt= file,
+you would first build your code with =make=
+
+#+begin_src bash
+make
+#+end_src
+
+Then run your program with the following:
+
+#+begin_src bash
+$ ./smtpcmd jemusser@example.address.com email.txt
+#+end_src
+
+** Assignment Files
+
+We provide you with the scaffold for the completed client in
+the course github repository.  In the =smtp/= subdirectory of 
+the course github you will find three files (described below) 
+that you will need to develop your SMTP client.
+
+ * *main.c* - This file will contain your work.
+ * *Makefile* - This file contains rules for automatically building your program.
+   Keep this file in the directory, but you can safely ignore it otherwise.
+ * *smtp.a* - This file is a "library" file containing helper code to simplify
+   this first project.
+
+** Library Code
+
+=smtp.a= is a file that contains compiled functions to help you implement
+your smtp client.  As long as you include the =smtp.a= file by calling
+=make=, you may call these functions in your code.
+
+*** connect_smtp
+
+#+BEGIN_QUOTE
+/arguments/ 
+  * (char*) *host* address of the SMTP server
+  * (int) *port* the integer port number of the SMTP server
+
+/returns/ - (int) Alias for your opened connection.
+
+/description/ - Starts the connection to the SMTP server
+
+#+END_QUOTE
+
+This function takes a =char*= host and an =int= port.  It returns an =int=
+that represents your connection; you will need to pass it to the =send_smtp= function.
+
+Using this function, you can connect to a server as below:
+
+/Example/
+#+BEGIN_SRC c
+int socket = connect_smtp("lunar.open.sice.indiana.edu", 25);
+#+END_SRC
+
+*** send_smtp
+
+#+BEGIN_QUOTE
+/arguments/
+  * (int) *socket* Integer returned from the =connect_smtp= function
+  * (char*) *message* Content of the message to send to the SMTP server
+  * (char*) *resp* A char buffer that will contain the response from the SMTP server
+  * (int) *len* The size of the *resp* buffer
+
+/returns/ - (void) This function returns no value
+
+/description/ - Send a message to the server and get the response.
+
+#+END_QUOTE
+
+This function takes an =int= socket (returned from =connect_smtp=) and
+a =char*= message that you want to send to the server.  The server's 
+response is placed in the /resp/ char* argument.
+
+Using this function, you can send a message to an open connection
+as below:
+
+/Example/
+#+BEGIN_SRC c
+char response[4096];
+send_smtp(socket, "HELO iu.edu\n", response, 4096);
+printf("%s\n", response);
+#+END_SRC
+
+
+* /TO SUBMIT/
+   * Submit your =smtp.txt= and =main.c= files to the autograder.
+     * Your =smtpcmd= program SHOULD print the responses from the server
+     * The last line printed by =smtpcmd= MUST be a =250 <token>= line from the server where =<token>= is the long character jumble from the server
+     * For full credit, your =smtpcmd= MUST ONLY take files no longer than 4096 characters and email them
+     * Do NOT submit a =250 <token>= from your =smtpcmd= program for your =smtp.txt=, this MUST be manually generated using =telnet=.
+   * email file expections
+     * =smtpcmd= MUST expect an email file to be formatted like the example below
+     * =smtpcmd= MUST NOT assume the email file will contain the trailing =\r\n.\r\n= sequence (your program should send this itself to complete the exchange)
+
+* /Example/
+
+*** email.txt
+
+#+BEGIN_QUOTE
+To whom it may concern,
+
+This is the full email email content.  It does not include anything like a header or a closing footer.
+I am having a fantastic day, though I admit I am a little hungry.  If you have gotten this far, good job,
+the email is now going to devolve quite quickly into lorum ipsum dolor sit amet, consectetur adipiscing elit, 
+sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud 
+exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit 
+in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, 
+sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+Thank you for attending my TED talk,
+
+Muspi Murol
+#+END_QUOTE

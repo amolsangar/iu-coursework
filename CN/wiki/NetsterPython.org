@@ -1,0 +1,199 @@
+* About
+The =netster= application is a framework for learning about and testing network code. Students 
+provide the implementation details behind the high-level interface of =netster=, and teachers 
+use this same high-level interface to measure how well the student's implementation matches the 
+requirements.
+
+** This Document
+This document contains a description of the /expected/ behavior of the final =netster= 
+application, after students provide their own working implementation. Individual assignment 
+README files describe when to implement specific features.
+
+** Construction
+=netster= consists of a "main" module which defines the command-line interface, as well as 
+several sub-modules containing student code for each assignment. As long as students stick 
+with the command-line interface of the main module, students are free to define their 
+implementation sub-modules as they see fit.
+
+/Message Size Warning/
+
+Some features of the =netster= application use UDP transport, which means that messages 
+exceeding the maximum transmission unit (as small as =1500= bytes) will be broken up or 
+discarded. While students /may/ send longer messages, they are /strongly advised/ to keep 
+individual payloads at or below =1024= bytes to avoid unintended segmentation.
+
+** Assignment Requirements
+Each assignment comes with two kinds of requirements: /interface requirements/, and 
+/behavior requirements/.
+
+- Interface Requirements :: command-line arguments or "flags"
+- Behavioral Requirements :: specific protocol details for students to implement for a given 
+assignment, test network conditions, and how the application reacts to certain conditions
+
+* Command-line Interface
+The command-line interface is described in full below.
+
+#+BEGIN_QUOTE
+Note - The commands shown here represent a COMPLETE list of netster commands.  Individual 
+assignments may only use a subset of these.
+#+END_QUOTE
+
+*** Netster options
+#+BEGIN_SRC bash
+./netster [-h] [-p PORT] [-i IFACE] [-f FILE] [-u] [-r RUDP] [<host>]
+#+END_SRC
+
+| Argument/Flag | Argument type | Description (server)                                           | Description (client) [If different]                          |
+|---------------+---------------+----------------------------------------------------------------+--------------------------------------------------------------|
+| =-h --help=   |               | Prints a help message describing the command and its arguments |                                                              |
+| =-p --port=   | *str*         | Port to open for the server application                        | Sets the remote server port                                  |
+| =-i --iface=  | *str*         | IP to listen to incoming connections on (=bind=)               | /unused/                                                     |
+| =-f --file=   | *str*         | Path to output file when in file-transfer mode                 | Path to input file when in file-transfer mode (see [[#Behavior][Behavior]]) |
+| =-u --udp=    | *bool*        | Sets =netster= to udp mode                                     |                                                              |
+| =-r --rudp=   | *int* {0,1,2} | Indicates reliability level in file-transfer mode (0, 1, or 2) |                                                              |
+| =<host>=      | *str*         | /unused/ in server, hostname for destination in clients        | Hostname of the remote server                                |
+
+* Behavior
+1. First, start =netester= as a /server/ by leaving off the =<host>= portion of the command.
+2. Then, start another =netster= instance as a /client/, either on the same host, or another 
+host with network connectivity to the server's host. The behavior of the /server/ and /client/ 
+instances are further specified by other command line arguments.
+
+A =netster= application always consists of 1 server and (at least) 1 client. The server must be 
+running before the client starts. Together, they operate in one of 2 mutually exclusive modes: 
+"chat" or "file".
+
+** Chat Mode
+In this mode, =netster= expects the following behavior:
+
+ - The server listens to the provided port number for new connections until explicitly requested 
+ to halt via a special protocol message.
+ - The client, similarly, opens a connection to the server and terminates execution only when 
+ provided with the corresponding protocol request.
+
+While in *chat* mode, the underlying transport protocol is TCP by default, or UDP if given the =--udp= 
+argument.
+
+*** TCP example
+**** Server
+#+BEGIN_SRC bash
+#<program> <port>
+./netster -p 8000
+#+END_SRC
+**** Client
+#+BEGIN_SRC bash
+#<program> <port>   <host>
+./netster -p 8000 192.168.1.2
+#+END_SRC
+
+The above example represents a /server/ and /client/ =netster= application in *chat* mode with TCP as the protocol. The /server/ instance of =netster= is run on a host with IP address =192.168.1.2= listening for incoming connections on port 8000.  The /client/ instance of =netster= is sending messages to IP address =192.168.1.2= with a destination port of 8000.  Please note that the /<host>/ portion of the /client/ was written as an IP address for clarity here.  It could (and should) also be able to take hostnames such as =localhost= and =www.google.com=.
+
+*** UDP example
+**** Server
+#+BEGIN_SRC bash
+#<program> <port> <proto>
+./netster -p 8000 --udp
+#+END_SRC
+**** Client
+#+BEGIN_SRC bash
+#<program> <port> <proto> <host>
+./netster -p 8000 --udp 192.168.1.2
+#+END_SRC
+
+The *chat/udp* mode takes the same arguments as the TCP example, but adds the =--udp= argument 
+indicating it should execute entirely with UDP sockets, rather than TCP.  This requires additional 
+implementation details because UDP does not maintain a persistent connection between /server/ and 
+/client/. However, the core functionality is identical.
+
+Both client and server must use the same protocol: either both use TCP or both use UDP.
+
+** File mode
+The =--file= argument means "transfer a file from the /client/ to the /server/".
+
+ - For the server, =--file x= means to create (or overwrite) the file named =x= in the server's current 
+ working directory.
+ - For the client, =--file abc.txt= means to read the file named =abc.txt= in the client's current 
+ working directory.
+ - For both client and server, this argument also allows you to specify a relative or absolute path, 
+ such as:
+  + =--file /usr/bin/example.sh=
+  + =--file C:\Documents\example.doc=
+  + =--file ../../src/foo/bar.baz=
+
+The /server/ must be running before the /client/ starts.  After the client starts, the client immediately
+begins sending the file to the server with no user interaction.  Finally, when the server finishes 
+downloading the file, both the server and client should terminate without user interaction.
+
+To summarize, when using =--file=, the =netster= application copies exactly 1 file from one location to 
+another, then terminates.  
+
+File mode uses Reliable UDP (RUDP) for transport with the =--rudp N= option, where =N= indicates the 
+reliability level:
+ - =--rudp 0= :: unreliable, uses UDP with no extra reliability features
+ - =--rudp 1= :: stop-and-wait operation (reliable but slow)
+ - =--rudp 2= :: go-back-N operation (reliable, faster than stop-and-wait)
+
+Client and server must both use the same value for this option. For example if the server uses =--rudp 2=, 
+then the client must also use =--rudp 2=.
+
+*** RUDP 0 Example
+The default reliability level is =0=, so not specifying =--rudp= at all is equivalent to specifying =--rudp 0=.
+
+It indicates that the entire file should be transferred over a raw UDP socket. Effectively, this represents the 
+most pure file transfer implementation.  Chunks of the file are transferred directly from /client/ to /server/ 
+over a UDP socket with no alteration.
+**** Server
+#+BEGIN_SRC bash
+#<program> <port> <download_filename>
+./netster -p 8000 --file foo.txt
+#+END_SRC
+**** Client
+#+BEGIN_SRC bash
+#<program> <port> <upload_filename> <host>
+./netster -p 8000 --file bar.txt 192.168.1.2
+#+END_SRC
+
+
+*** RUDP 1 Example
+With =--rudp 1=, all payloads contain an RUDP header and implement the stop-and-wait mechanism to add reliable 
+transport to a lossy network. Given a connection with =50ms= round trip latency and =30%= packet loss, =--rudp 1= 
+should eventually transfer the entire file from client to server. This would not be possible with =--rudp 0= since 
+UDP has no way to recover lost packets.
+**** Server
+#+BEGIN_SRC bash
+#<program> <port>  <rudp>  <download_filename>
+./netster -p 8000 --rudp 1 --file foo.txt
+#+END_SRC
+**** Client
+#+BEGIN_SRC bash
+#<program> <port>  <rudp> <upload_filename> <host>
+./netster -p 8000 --rudp 1 --file bar.txt 192.168.1.2
+#+END_SRC
+
+*** RUDP 2 Example
+The reliability of =--rudp 2= is identical to =--rudp 1=, but =--rudp 2= uses a pipeline approach and a "go back N" 
+retransmit strategy for better network utilization, which translates into more speed.
+**** Server
+#+BEGIN_SRC bash
+#<program> <port>  <rudp>  <download_filename>
+./netster -p 8000 --rudp 2 --file foo.txt
+#+END_SRC
+**** Client
+#+BEGIN_SRC bash
+#<program> <port>  <rudp> <upload_filename> <host>
+./netster -p 8000 --rudp 2 --file bar.txt 192.168.1.2
+#+END_SRC
+
+* The --interface Flag
+The interface flag is almost always best left on default. For completeness, however, its behavior is explained here. 
+This flag should be passed to the =getaddrinfo= or =bind= calls of the /server/ and is responsible for /which/ network 
+interface the server connects to. If given the default 0.0.0.0 interface, the /server/ will listen for and receive 
+messages from any IP address associated with the host.
+
+But not all hosts have just a single interface, and it is often useful - especially in professional practice - to be 
+able to limit a /server/ to just one of the interfaces on a host. Imagine, for instance, that you were running =netster= 
+on your laptop. Your laptop has a wifi and an ethernet connection. The ethernet is connected to your local router, but 
+your wifi is connected to the coffee shop down the road, you may wish to only run =netster= or =your_server_of_choice= on a 
+specific interface. The =--interface= flag in =netster= gives you that option. In the aforementioned scenario, if your wifi 
+IP address was =10.0.10.5= and your ethernet IP was =192.168.1.2=, you could limit =netster= to just listening to your 
+ethernet LAN traffic by passing =--interface 192.168.1.2= as an argument.

@@ -1,0 +1,60 @@
+In this course, we will use Git versioning software to maintain our code
+and Linux as our working environment.  In order to keep your environment
+consistent with our own testing environmnts, we _strongly_ encourage
+studnts to work entirely on the School provided linux servers.
+We will walk through connecting to and using these servers below.
+
+* Working on ~SILO~ / ~gh~
+
+/silo/ and /gh/ (Grace Hopper) are linux servers set up for students to use in any course.  Your files
+created on this server are only visible to you and will be available to you
+for as long as you are a student at IU.
+
+/silo/ and /gh/ are two of many servers accessible through the _luddy.indiana.edu_
+domain.  Hence, the address for /silo/ is *silo.luddy.indiana.edu* and /gh/ is *gh.luddy.indiana.edu*.
+
+*** /A quick note about Windows/
+#+BEGIN_QUOTE
+The instructions will use the word "terminal" below a lot.  This is a linux/mac 
+command _shell_ for running applications from a text interface.  Windows
+also has a command /shell/ (two in fact), called "Command Prompt" (and "powershell").  
+All of the instructions here will work in both "Command Prompt" and "terminal" as long 
+as you have the most recent version of windows 10 or 11.  To run "Command Prompt", type 
+/cmd/ into the Windows search in the start menu and double click the "Command Prompt" 
+program.
+#+END_QUOTE
+
+** Connecting through SSH
+
+SSH is a secure shell program that lets us run programs on a remote system.
+In effect, after calling the ~ssh~ program from your /terminal/, every
+command you type after that is being run on a remote server/computer until you
+run the ~exit~ program that terminates the connection.
+
+Start a new session by opening your /terminal/ and running ~ssh~ with a
+user and host address.  This is formatted similar to an email address.  For instance
+to connect to /silo/ as the *my_iu_username* user, you would run the following:
+
+#+BEGIN_SRC bash
+ssh my_iu_username@silo.luddy.indiana.edu
+#+END_SRC
+
+** SSH Keys and Passwords
+
+If you have not already configured SSH at IU, it's at this point that you will be
+prompted for a password and Duo authentication.  
+
+This is kind of painful to enter each time, so let's get rid of that password
+requirement by adding a "key" to your system.  This will allow your local host
+to securely inform /silo/ that it's safe to allow the session without a password.
+
+Follow the [[https://kb.iu.edu/d/aews#before][directions found here]] to generate your key and add it to /silo/.
+
+*** /A quick note about Windows/
+#+BEGIN_QUOTE
+The linked instructions are for linux and will work as is, with one exception.
+The paths for files on your local Windows machine (not copied to /silo/ with ~scp~)
+will use the Windows path format.  In this case, the output of ~ssh-keygen~ should
+tell you the path to the your "key" file.  Use this path in the ~scp~ call
+later in the instructions instead of the one provided.
+#+END_QUOTE

@@ -1,0 +1,130 @@
+# + TITLE: ENGR-E 318/599 and CSCI-P 438/538
+# + SUBTITLE: Fall 2022
+# + OPTIONS: toc:nil num:nil html-postamble:nil author:nil date:nil
+# + LATEX_HEADER: \usepackage{times}
+# + LATEX_HEADER: \usepackage{listings}
+# + LATEX_HEADER: \lstset{basicstyle=\small\ttfamily,columns=flexible,breaklines=true}
+# + LATEX_HEADER: \usepackage[a4paper,margin=1.0in]{geometry}
+# + LATEX_HEADER: \setlength{\parindent}{0cm}
+# + LATEX_HEADER: \usepackage{enumitem}
+# + LATEX_HEADER: \setitemize{noitemsep,topsep=2pt,parsep=2pt,partopsep=2pt}
+# + LATEX_HEADER: \usepackage{titling}
+# + LATEX_HEADER: \setlength{\droptitle}{-1in}
+# + LATEX_HEADER: \posttitle{\par\end{center}\vspace{-.9in}}
+
+* Engineering Networks / Introduction to Computer Networks
+
+ * Class time    : 
+  * *Tue-Thu 1:15pm - 2:30pm*
+   * Luddy Hall 1106
+ * Discussion    : 
+  * *Thu 6:30 PM to 7:45 PM* on [[https://iu.zoom.us/j/9728222236][zoom]] and in Myles Brand Hall E150 with [[mailto:styagi@iu.edu][Sahil Tyagi]]
+  * *Fri 1:50 PM to 2:40 PM* on [[https://iu.zoom.us/j/85936834904][zoom]] and in Luddy Hall 1104 with [[mailto:ashroyer@iu.edu][Alex Shroyer]]
+  * *Fri 3:00 PM to 4:15 PM* on [[https://iu.zoom.us/j/85644771007][zoom]] and in Luddy Center for Artificial Intelligence 1001 with [[mailto:ashroyer@iu.edu][Alex Shroyer]]
+  * *Fri 3:00 PM to 3:50 PM* on [[https://iu.zoom.us/j/82940326429][zoom]] and in Luddy Hall 1104 with [[mailto:jemusser@iu.edu][Jeremy Musser]]
+  * *Fri 4:10 PM to 5:00 PM* on [[https://iu.zoom.us/j/82940326429][zoom]] and in Luddy Hall 1104 with [[mailto:jemusser@iu.edu][Jeremy Musser]]
+ * Class email   : luddy-networks-l@list.indiana.edu
+
+ * Instructor: Martin Swany
+    * Hours  : TBD
+    * email  : swany@iu.edu
+
+ * Instructor : Jeremy Musser
+    * Hours  : Mondays 10:00-11:00 AM Luddy 4139 or [[https://iu.zoom.us/j/84641251475][Zoom]]
+    * email  : jemusser@iu.edu
+ * Instructor : Alex Shroyer
+    * Hours  : Wednesdays 3:00-4:00 PM [[https://iu.zoom.us/j/85936834904][Zoom]]
+ * Instructor : Sahil Tyagi
+    * Hours  : Fridays 12:00-1:00 PM [[https://iu.zoom.us/j/9728222236][Zoom]]
+ * Instructor : Niket Malihalli
+    * Hours  : Tuesdays 10:00-11:00 AM [[https://iu.zoom.us/j/4509581481][Zoom]]
+ * Instructor : Ratchahan Anbarasan
+    * Hours  : Thursdays 1:30-2:30 PM [[https://iu.zoom.us/j/2118171245][Zoom]]
+ * Instructor : Siddharth Tata
+    * Hours  : Mondays 9:00-10:00 AM, Tuesdays 9:00-10:00 AM [[https://iu.zoom.us/j/8297004449][Zoom]]
+ * Instructor : Nagatheja Sharaf
+    * Hours  : Fridays 2:00-5:00 PM [[https://iu.zoom.us/j/9035117136][Zoom]]
+   
+
+** Course Information and Objectives
+  In this class we will develop a thorough understanding of foundation principles,
+  architectures, and techniques employed in computer networks. A network is
+  viewed as a hierarchy of layers, or abstract machines. Each layer uses
+  services offered by lower layers to in turn provide enhanced service to the
+  next higher layer. These layers form a protocol suite.  This course focuses
+  on protocols and mechanisms used in the Internet TCP/IP protocol suite,
+  including the design and operation of both wide-area and local-area
+  networks. In the homework and lab components of this course, we will implement 
+  simplified versions of the TCP/IP protocols using application-level network programming.
+ 
+  Specific topics include: 
+   - introduction (network architectures, protocol layering, TCP/IP and OSI Reference Models)
+   - application layer (Web and http, email, file transfer, DNS)
+   - transport layer (TCP, UDP, connection management, end-to-end reliable data transfer, sliding window protocols,
+                      quality of service, flow control, congestion control, socket programming)
+   - network layer (link-state vs. distance-vector routing, IPv4, IPv6, internetworking)
+   - local area and wireless networks (Ethernet, switches, 802.11, CDMA)
+   - data link layer (framing, error control, CRC checksums,)
+   - physical layer (analog vs digital transmission, the telephone system, packet vs circuit switching, multiplexing).
+  
+** Textbooks and Resources
+
+ * /[[https://www.pearson.com/us/higher-education/program/Kurose-Computer-Networking-A-Top-Down-Approach-7th-Edition/PGM1101673.html][Computer Networking: A Top-Down Approach]]/ by Kurose, Ross, 7th Edition
+ * [[Submission][Code Submission Guidelines]]
+ * [[CodeStyle][Code Formatting Guidelines]]
+
+** Tentative schedule (subject to adjustments)
+
+| Week | Dates       | Lecture                     | Assignment                | Other        |
+|------+-------------+-----------------------------+---------------------------+--------------|
+|    1 | 8/23,8/25   | Ch1 Introduction            | [[01_HTTP][HTTP]]         |              |
+|    2 | 8/30,9/1    | Ch2 Application             | [[02_SMTP][SMTP]]         |              |
+|    3 | 9/6,9/8     | Ch2 Application / Sockets   | [[03_DNS][DNS]]           |              |
+|    4 | 9/13,9/15   | Ch2 Sockets Programming     |                           |              |
+|    5 | 9/20,9/22   | Ch3 Transport / UDP         | [[04_sockets][Sockets]]   |              |
+|    6 | 9/27,9/29   | Ch3 Transport / Reliable    |                           |              |
+|    7 | 10/4,10/6   | Ch3 Transport / TCP         |                           | QUIC Reading |
+|    8 | 10/11,10/13 | Ch1-3 Review                | [[05_files][Files]]       |              |
+|    9 | 10/18,10/20 | Midterm                     |                           |              |
+|   10 | 10/25,10/27 | Ch4 Network / Data Plane    | [[06_saw][Stop and Wait]] |              |
+|   11 | 11/1,11/3   | Ch5 Network / Control Plane |                           |              |
+|   12 | 11/8,11/10  | Ch5 Network                 | [[07_gbn][Go Back N]]     |              |
+|   13 | 11/15,11/17 | Ch6 Link Layer              |                           |              |
+|   14 | 11/22,11/24 | Thanksgiving                |                           |              |
+|   15 | 11/29,12/1  | Physical Layer              | [[08_lswitch][Learning Switches]] |              |
+|   16 | 12/6,12/8   |                             |                           |              |
+|   17 | 12/15 5:25P | Final                       | Final                     | Final        |
+
+
+
+** Assignments
+
+Assignments should be submitted according to the code [[https://github.iu.edu/SICE-Networks/Net-Fall22/wiki/Submission][submission guidelines]].
+
+** Grading
+
+  * 40% Exams
+  * 50% Programming Assignments
+  * 10% Class Participation, Quizzes, and Other Assignments
+
+** Course Policies
+
+ * Understand university policy on [[http://studentcode.iu.edu/responsibilities/academic-misconduct.html][academic honesty]]. More information specific to this course is [[https://github.iu.edu/SICE-Networks/Net-Fall22/wiki/Citations][here]].
+ * You must submit your own work!
+    * It is _never_ acceptable to cut and paste without proper attribution.
+ * Code submissions are to follow the code [[https://github.iu.edu/SICE-Networks/Net-Fall22/wiki/CodeStyle][formatting guidelines]].
+ * For assignments using the School Autograding service, you may only make TWO submissions per assignment
+   * Submissions beyond 2 will result in a 2% penalty to that assignment's grade
+ * Late assignments will be penalized as follows:
+
+ #+begin_src text
+   Day 1 = 1 point off
+   Day 2 = 2 points off (total = 3)
+   Day 3 = 3 points off (total = 6)
+   Day 4 = 5 points off (total = 11)
+   Day 5 = 8 points off (total = 19)
+   Day 6 = 13 points off (total = 32)
+   Day 7 = 21 points off (total = 53)
+   Maximum of 1 week (7 days) for late assignments.
+ #+end_src
+ 

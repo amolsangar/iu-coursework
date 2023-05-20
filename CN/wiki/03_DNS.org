@@ -1,0 +1,157 @@
+#+TITLE: Query the Domain Name System
+#+SUBTITLE: Fall 2022
+#+OPTIONS: toc:nil num:nil html-postamble:nil author:nil date:nil
+#+LATEX_HEADER: \usepackage{times}
+#+LATEX_HEADER: \usepackage{listings}
+#+LATEX_HEADER: \lstset{basicstyle=\small\ttfamily,columns=flexible,breaklines=true}
+#+LATEX_HEADER: \usepackage[a4paper,margin=1.0in]{geometry}
+#+LATEX_HEADER: \setlength{\parindent}{0cm}
+#+LATEX_HEADER: \usepackage{parskip}
+#+LATEX_HEADER: \usepackage{enumitem}
+#+LATEX_HEADER: \setitemize{noitemsep,topsep=2pt,parsep=2pt,partopsep=2pt}
+#+LATEX_HEADER: \usepackage{titling}
+#+LATEX_HEADER: \setlength{\droptitle}{-1in}
+#+LATEX_HEADER: \posttitle{\par\end{center}\vspace{-.5in}}
+
+In this exercise, we will implement a C client to query the
+Domain Name System for IP addresses.  You will write a program
+that takes a host and port like =luddy.indiana.edu 80= and print the
+IP addresses associated with that host and domain.
+
+* Task - Write a simple DNS client
+
+The purpose of this exercise is to dig deeper into the C functionality for
+interacting with the network.  In particular, this task will work with the
+=getaddrinfo= and =inet_ntop= functions.
+
+#+BEGIN_QUOTE
+This will be the deepest dive yet into C minutiae, so instead of jumping streight into
+it, we'll discuss the =getaddrinfo= and =inet_ntop= functions briefly.
+#+END_QUOTE
+
+*** /getaddrinfo/
+
+#+BEGIN_QUOTE
+The following is quite dense, but reading (and potentially rereading) will be necessary to
+understand the =getaddrinfo= function.
+#+END_QUOTE
+
+**** About
+
+The function serves as a programmatic window into the DNS.  By passing arguments to it,
+you can query the nearest DNS proxy as defined by your system settings.  As such,
+=getaddrinfo= interacts directly with your operating system.
+
+Unfortunately, DNS has numerous features that require many different combinations of
+flags in order to function, so =getaddrinfo= can be very opaque.
+
+**** Arguments
+
+Take a quick look at the function prototype for [[https://man7.org/linux/man-pages/man3/getaddrinfo.3.html][getaddrinfo]].
+Also take a look at the =addrinfo= struct in the Description section of that page.
+
+The /node/ and /service/ arguments correspond with the server's *host* and *port* parts of the url, 
+but REMEMBER to make sure you are correctly converting your port to an /char*/ if it is not already.  
+The /hints/ and /res/ arguments are more unintuitive.
+
+The /hints/ tells =getaddrinfo= what sort of query it should make, so for this assignment, keep this simple
+and use the =PF_UNSPEC=, =SOCK_STREAM=, =IPPROTO_TCP= and =AI_PASSIVE= for the 
+/ai_family/, /ai_socktype/, /ai_protocol/ and /ai_flags/ fields of the /hints/ structure (which should be a 
+=struct addrinfo= type).  This corresponds with an "unspecified" request and will return all IPv4 and IPv6
+addresses.
+
+The /res/ is the response from the server.  This is not as straight forward as it sounds.
+DNS returns MULTIPLE responses for a single query, so the /res/ argument is a /linked list/
+of =struct addrinfo= records.  You can access the next record with the /ai_next/ field.
+
+#+BEGIN_QUOTE
+To correctly interpret the response from =getaddrinfo= you MUST iterate through the results
+and handle each.  For instance, this may correspond to a server having an IPv4 AND IPv6 address.
+#+END_QUOTE
+
+*** /inet_ntop/
+
+=inet_ntop= is comparatively simple.  Take a look at the manual page, [[https://man7.org/linux/man-pages/man3/inet_ntop.3.html][inet_ntop]]. 
+It takes:
+
+ * an address type (AF_INET or AF_INET6)
+ * an address (in the form of a generic =void*=)
+ * a char* buffer to store the result
+ * an int length for the result buffer
+
+In order to print the result of a =struct addrinfo= - the return value of =getaddrinfo= - you have
+to extract the raw address from the struct.  This is stored in the /ai_addr/ field of the struct.
+
+Now for the unfortunately part...  To make sure that =getaddrinfo= is compatible with ALL future 
+versions of IP, the =struct addrinfo= is an /abstract/ structure.  In order to use it, you have
+to convert it to the correct structure for the correct IP version.
+
+The IP version is stored in the /ai_family/ field of the =struct addrinfo=.  Thus, to convert
+the address to the correct type, some form of the following is necessary (where =addr= is an
+=addrinfo= structure):
+
+#+BEGIN_SRC c
+void* raw_addr;
+if (addr->ai_family == AF_INET) { // Address is IPv4
+  struct sockaddr_in* tmp = (struct sockaddr_in*)addr->ai_addr; // Cast addr into AF_INET container
+  raw_addr = &(tmp->sin_addr); // Extract the address from the container
+}
+else { // Address is IPv6
+  struct sockaddr_in6* tmp = (struct sockaddr_in6*)addr->ai_addr; // Cast addr into AF_INET6 container
+  raw_addr = &(tmp->sin6_addr); // Extract the address from the container
+}
+/* Use raw_addr as a generic address for inet_ntop */
+#+END_SRC
+
+
+** Task
+
+You will write a program that takes two arguments: a =host= such as /www.example.com/, and a =port= such as /80/
+and print out every IPv4 and IPv6 address associated with that host.
+
+Output should be a single line per address, with the first 4 characters being either IPv4 or IPv6 followed by a
+space ' ', followed by the corresponding address.
+
+In order to test your code, build it with the =make= command:
+
+#+begin_src bash
+make
+#+end_src
+
+Then run your program with the following:
+
+#+begin_src bash
+$ ./dnscmd www.example.com 80
+#+end_src
+
+**** /Result/
+#+begin_src bash
+IPv6 2606:2800:220:1:248:1893:25c8:1946
+IPv4 93.184.216.34
+#+end_src
+
+** Assignment Files
+
+We provide you with the scaffold for the completed client in
+the course github repository.  In the =dns/= subdirectory of 
+the course github you will find two files (described below) 
+that you will need to develop your DNS client.
+
+ * *main.c* - This file will contain your work.
+ * *Makefile* - This file contains rules for automatically building your program.
+   Keep this file in the directory, but you can safely ignore it otherwise.
+
+*** /Note/
+#+BEGIN_QUOTE
+There are no special library files for this assignment, you will need to build all of the functionality from standard C library functions, including those describe above.
+#+END_QUOTE
+
+
+** /TO SUBMIT/
+   * Submit your =main.c= file to the autograder
+     * =main.c= MUST print all IPv4 and IPv6 addresses for the requested address
+       * IPv4 addresses should appear on their own line as a label, then address i.e. 
+         * =IPv4 192.168.1.1=
+       * IPv6 addresses should appear on their own line as a label, then address i.e.
+         * =IPv6 aaaa:bbbb:cccc:dddd:eeee:ffff:1111:2222=
+     * The line order of the output will not be considered (As long as all addresses appear, they may appear in any order)

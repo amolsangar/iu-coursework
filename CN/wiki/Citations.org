@@ -1,0 +1,40 @@
+* Acceptable Usage Guidelines
+- Example code from the instructors may be used without attribution
+- Common/idiomatic code (such as ~for(int i=0;i<size;i++)~) does not require attribution
+- Some primary source materials may be used if you also cite the source. For example: linux manual page examples may be used with attribution/citations. If you include a snippet from a manual page, you must add a citation as a comment in your source file.
+- If in doubt, ask an instructor
+
+Below is an example of adding a snippet from a linux manual page to your code. The citation can be informal (=from man getaddrinfo=) but specific enough so the instructors can find it easily. Add clear begin/end comments so we know exactly which lines you are citing.
+
+#+BEGIN_SRC C
+// from man getaddrinfo
+// begin snippet
+struct addrinfo hints;
+struct addrinfo *result, *rp;
+int sfd, s;
+struct sockaddr_storage peer_addr;
+socklen_t peer_addr_len;
+ssize_t nread;
+char buf[BUF_SIZE];
+if (argc != 2) {
+    fprintf(stderr, "Usage: %s port\n", argv[0]);
+    exit(EXIT_FAILURE);
+}
+// end snippet
+#+END_SRC
+
+* The most expensive code in the world
+This sort of thing matters even outside of school!
+Don't be that engineer that forgot to rewrite these 9 lines of code in their own words, and ended up [[https://fossbytes.com/9-lines-of-code-that-google-stole-from-oracle-java-android/][costing Goole $40 million]], or about $103896 per /character/: 
+
+#+begin_src java
+private static void rangeCheck(int arrayLen, int fromIndex, int toIndex {
+     if (fromIndex > toIndex)
+          throw new IllegalArgumentException("fromIndex(" + fromIndex +
+               ") > toIndex(" + toIndex+")");
+     if (fromIndex < 0) 
+          throw new ArrayIndexOutOfBoundsException(fromIndex);
+     if (toIndex > arrayLen) 
+          throw new ArrayIndexOutOfBoundsException(toIndex);
+}
+#+end_src
