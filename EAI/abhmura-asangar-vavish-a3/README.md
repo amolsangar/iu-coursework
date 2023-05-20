@@ -17,34 +17,34 @@
   ### **Output:** ###
   
   **Test Image 23**
-  
-  <img src='https://github.iu.edu/cs-b551-fa2021/abhmura-asangar-vavish-a3/blob/master/part2/output/image_23/output_simple.jpg' alt='Output Simple'>
-  <img src='https://github.iu.edu/cs-b551-fa2021/abhmura-asangar-vavish-a3/blob/master/part2/output/image_23/output_hmm.jpg' alt='Output Image'>
-  <img src='https://github.iu.edu/cs-b551-fa2021/abhmura-asangar-vavish-a3/blob/master/part2/output/image_23/output_feedback.jpg' alt='Output Image'>
+
+  <img src='https://github.com/amolsangar/iu-coursework/blob/main/EAI/abhmura-asangar-vavish-a3/part2/output/image_23/output_simple.jpg' alt='Output Simple'>
+  <img src='https://github.com/amolsangar/iu-coursework/blob/main/EAI/abhmura-asangar-vavish-a3/part2/output/image_23/output_hmm.jpg' alt='Output Image'>
+  <img src='https://github.com/amolsangar/iu-coursework/blob/main/EAI/abhmura-asangar-vavish-a3/part2/output/image_23/output_feedback.jpg' alt='Output Image'>
   <br/>
   Simple &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; HMM with Viterbi &emsp;&emsp;&emsp;&emsp;&emsp;&emsp; Human Feedback
   
   **Test Image 09**
   
-  <img src='https://github.iu.edu/cs-b551-fa2021/abhmura-asangar-vavish-a3/blob/master/part2/output/image_09/output_simple.jpg' alt='Output Simple'>
-  <img src='https://github.iu.edu/cs-b551-fa2021/abhmura-asangar-vavish-a3/blob/master/part2/output/image_09/output_hmm.jpg' alt='Output HMM'>
-  <img src='https://github.iu.edu/cs-b551-fa2021/abhmura-asangar-vavish-a3/blob/master/part2/output/image_09/output_feedback.jpg' alt='Output Human Feedback'>
+  <img src='https://github.com/amolsangar/iu-coursework/blob/main/EAI/abhmura-asangar-vavish-a3/part2/output/image_09/output_simple.jpg' alt='Output Simple'>
+  <img src='https://github.com/amolsangar/iu-coursework/blob/main/EAI/abhmura-asangar-vavish-a3/part2/output/image_09/output_hmm.jpg' alt='Output HMM'>
+  <img src='https://github.com/amolsangar/iu-coursework/blob/main/EAI/abhmura-asangar-vavish-a3/part2/output/image_09/output_feedback.jpg' alt='Output Human Feedback'>
   <br/>
   Simple &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; HMM with Viterbi &emsp;&emsp;&emsp;&emsp;&emsp;&emsp; Human Feedback
   
   **Test Image 16**
   
-  <img src='https://github.iu.edu/cs-b551-fa2021/abhmura-asangar-vavish-a3/blob/master/part2/output/image_16/output_simple.jpg' alt='Output Simple'>
-  <img src='https://github.iu.edu/cs-b551-fa2021/abhmura-asangar-vavish-a3/blob/master/part2/output/image_16/output_hmm.jpg' alt='Output HMM'>
-  <img src='https://github.iu.edu/cs-b551-fa2021/abhmura-asangar-vavish-a3/blob/master/part2/output/image_16/output_feedback.jpg' alt='Output Human Feedback'>
+  <img src='https://github.com/amolsangar/iu-coursework/blob/main/EAI/abhmura-asangar-vavish-a3/part2/output/image_16/output_simple.jpg' alt='Output Simple'>
+  <img src='https://github.com/amolsangar/iu-coursework/blob/main/EAI/abhmura-asangar-vavish-a3/part2/output/image_16/output_hmm.jpg' alt='Output HMM'>
+  <img src='https://github.com/amolsangar/iu-coursework/blob/main/EAI/abhmura-asangar-vavish-a3/part2/output/image_16/output_feedback.jpg' alt='Output Human Feedback'>
   <br/>
   Simple &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; HMM with Viterbi &emsp;&emsp;&emsp;&emsp;&emsp;&emsp; Human Feedback
   
   **Test Image 30**
   
-  <img src='https://github.iu.edu/cs-b551-fa2021/abhmura-asangar-vavish-a3/blob/master/part2/output/image_30/output_simple.jpg' alt='Output Simple'>
-  <img src='https://github.iu.edu/cs-b551-fa2021/abhmura-asangar-vavish-a3/blob/master/part2/output/image_30/output_hmm.jpg' alt='Output HMM'>
-  <img src='https://github.iu.edu/cs-b551-fa2021/abhmura-asangar-vavish-a3/blob/master/part2/output/image_30/output_feedback.jpg' alt='Output Human Feedback'>
+  <img src='https://github.com/amolsangar/iu-coursework/blob/main/EAI/abhmura-asangar-vavish-a3/part2/output/image_30/output_simple.jpg' alt='Output Simple'>
+  <img src='https://github.com/amolsangar/iu-coursework/blob/main/EAI/abhmura-asangar-vavish-a3/part2/output/image_30/output_hmm.jpg' alt='Output HMM'>
+  <img src='https://github.com/amolsangar/iu-coursework/blob/main/EAI/abhmura-asangar-vavish-a3/part2/output/image_30/output_feedback.jpg' alt='Output Human Feedback'>
   <br/>
   Simple &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; HMM with Viterbi &emsp;&emsp;&emsp;&emsp;&emsp;&emsp; Human Feedback
   
